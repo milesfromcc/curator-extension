@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.dark,
+:root[class~='dark'] {
+  color: whitesmoke;
+  background-color: #1a202c;
+}
+
+.animate-delayed-appear {
+  animation-name: appear;
+  animation-delay: 1200ms;
+  animation-duration: 150ms;
+  --tw-enter-opacity: initial;
+  --tw-enter-scale: initial;
+  --tw-enter-rotate: initial;
+  --tw-enter-translate-x: initial;
+  --tw-enter-translate-y: initial;
+
+  /* Initial state: element is hidden */
+  opacity: 0;
+
+  /* Ensure the element remains visible after the animation */
+  animation-fill-mode: forwards;
+}
+
+.animate-extradelayed-appear {
+  animation-name: appear;
+  animation-delay: 5000ms;
+  animation-duration: 150ms;
+  --tw-enter-opacity: initial;
+  --tw-enter-scale: initial;
+  --tw-enter-rotate: initial;
+  --tw-enter-translate-x: initial;
+  --tw-enter-translate-y: initial;
+
+  /* Initial state: element is hidden */
+  opacity: 0;
+
+  /* Ensure the element remains visible after the animation */
+  animation-fill-mode: forwards;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0; /* Start with opacity 0 */
+  }
+  100% {
+    opacity: 1; /* Fully visible at the end of the animation */
+  }
+}
