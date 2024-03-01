@@ -40,7 +40,7 @@ var options = {
   entry: {
     newtab: path.join(__dirname, 'app', 'pages', 'Newtab', 'index.jsx'),
     options: path.join(__dirname, 'app', 'pages', 'Options', 'index.jsx'),
-    popup: path.join(__dirname, 'app', 'pages', 'Popup', 'index.jsx'),
+    popup: path.join(__dirname, 'app', 'pages', 'Popup', 'index.tsx'),
     background: path.join(__dirname, 'app', 'pages', 'Background', 'index.js'),
     contentScript: path.join(__dirname, 'app', 'pages', 'Content', 'index.js'),
     devtools: path.join(__dirname, 'app', 'pages', 'Devtools', 'index.js'),
@@ -177,7 +177,7 @@ var options = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: 'app/assets/img/icon-128.png',
+          from: 'app/assets/img/curation_space_logo.png',
           to: path.join(__dirname, 'build'),
           force: true,
         },
@@ -186,7 +186,7 @@ var options = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: 'app/assets/img/icon-34.png',
+          from: 'app/assets/img/curation_space_logo.png',
           to: path.join(__dirname, 'build'),
           force: true,
         },
