@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Spinner, Typography } from '@material-tailwind/react';
 import Login from '../../containers/login';
 import PushToContentList from '../../containers/push_to_content_list';
-import PushedToContentListSuccess from '../../containers/pushed_to_content_list_success';
 import { Button } from '../../components/ui/button';
 
 import {
@@ -30,8 +29,28 @@ import {
   TooltipTrigger,
 } from '../../components/ui/tooltip';
 
+import './index.css';
+import '../../tailwind.css';
+
+// import logo from './logo.png';
+
 const Popup = () => {
+  // useEffect(() => {
+  //   function handlePopupOpened(event: MessageEvent) {
+  //     if (event.data.type === 'POPUP_OPENED') {
+  //       // Handle the popup being opened here
+  //     }
+  //   }
+
+  //   window.addEventListener('message', handlePopupOpened);
+
+  //   return () => {
+  //     window.removeEventListener('message', handlePopupOpened);
+  //   };
+  // }, []);
+
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
+  const [overlayTitle, setOverlayTitle] = useState<string>('');
 
   const [user, setUser] = useState<User | null>(
     localStorage.getItem('user')
@@ -63,14 +82,21 @@ const Popup = () => {
   return (
     <div className="relative h-full">
       {showOverlay && (
-        <button className="absolute inset-0 flex z-10 flex-col justify-center items-center">
+        <button
+          className="absolute inset-0 flex z-10 flex-col justify-center items-center"
+          onClick={() => {
+            window.close();
+          }}
+        >
           <div className="bg-gray-800 opacity-75 backdrop-blur-2px w-full h-full pointer-events-none"></div>
-          <div className="absolute flex flex-col items-center p-12 h-fit w-fit bg-white rounded-lg">
-            <CheckCircleIcon className="h-16 w-16 text-green-600" />
-            <Typography variant="small" className="font-semibold">
-              Saved to {}
-            </Typography>
-            <p>Click anywhere to close</p>
+          <div className="absolute flex flex-col justify-between items-center p-6 bg-white rounded-lg h-4/5 w-4/5">
+            <div className="flex flex-col items-center">
+              <CheckCircleIcon className="h-16 w-16 text-green-600" />
+              <Typography variant="h6" className="mt-1">
+                Saved to {overlayTitle}
+              </Typography>
+              <p className="text-sm">Click anywhere to close</p>
+            </div>
             <Button
               onClick={(e) => {
                 e.stopPropagation();
@@ -78,25 +104,22 @@ const Popup = () => {
               }}
               type="submit"
               variant="outline"
-              className="mt-12"
+              className="w-full"
             >
               Push another link
             </Button>
-            <p className="mt-2">
-              <a
-                onClick={(e) => {
-                  window.close();
-                }}
-              >
-                Close
-              </a>
-            </p>
           </div>
         </button>
       )}
       <div className="flex flex-col justify-between h-full">
-        {userIsLoggedIn !== false && user !== null ? (
-          <header className="w-full justify-between flex border-b-2 border-gray-200 p-2">
+        <header className="flex justify-center items-center h-fit bg-gray-100 p-1.5">
+          <img src="./logo.png" className="w-5 h-5" />
+          <p className="ml-0.5 text-sm">
+            <strong className="font-semibold">curation</strong>space
+          </p>
+        </header>
+        {userIsLoggedIn !== false && user !== null && (
+          <div className="w-full justify-between flex border-b border-gray-200 p-2">
             <div className="flex items-center">
               <img
                 src={user.photoURL}
@@ -105,7 +128,16 @@ const Popup = () => {
               />
               <div className="ml-1.5">
                 <p className="font-semibold leading-none">{user.displayName}</p>
-                <p className="text-xs">@{user.uid}</p>
+                <p className="text-xs">
+                  <a
+                    href={`https://www.curation.space/${user.uid}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-blue-500"
+                  >
+                    @{user.uid}
+                  </a>
+                </p>
               </div>
             </div>
             <DropdownMenu>
@@ -179,13 +211,7 @@ const Popup = () => {
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>
-          </header>
-        ) : (
-          <header className="w-full flex justify-center items-center border-b-2 border-gray-100 p-2.5">
-            <p className="text-lg">
-              curation<strong className="font-semibold">space</strong>
-            </p>
-          </header>
+          </div>
         )}
         <main className="grow mt-2 mx-auto w-5/6">
           {/* <div className="h-full"> */}
@@ -198,7 +224,10 @@ const Popup = () => {
           {activeViewTab === 'push_to_content_list' && user !== null && (
             <PushToContentList
               ownerUid={user.uid}
-              setShowOverlay={setShowOverlay}
+              setShowOverlay={(overlayTitle: string) => {
+                setShowOverlay(true);
+                setOverlayTitle(overlayTitle);
+              }}
             />
           )}
           {/* </div> */}

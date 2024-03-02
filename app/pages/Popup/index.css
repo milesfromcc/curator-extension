@@ -1,6 +1,8 @@
 body {
   min-width: 325px;
-  min-height: 375px;
+  max-width: 325px;
+  /* min-height: 375px; */
+  height: 600px;
   margin: 0;
   font-family: Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;

@@ -26,7 +26,11 @@ import {
   Square3Stack3DIcon,
 } from '@heroicons/react/24/outline';
 
-import { StarIcon } from '@heroicons/react/24/solid';
+import {
+  HeartIcon,
+  InboxArrowDownIcon,
+  StarIcon,
+} from '@heroicons/react/24/solid';
 
 import {
   getCurationsByUid,
@@ -38,6 +42,7 @@ import { FeedTagBadge } from '../components/feedTagBadge';
 import { FeedTag } from '../entities/tags';
 import { ContentList, Curation, Feed } from '../entities/lists';
 import { isFetchableURL } from '../utils/inputValidation';
+import { BookOpenCheckIcon } from 'lucide-react';
 
 interface DropDownMenuItemContentProps {
   name: string;
@@ -55,7 +60,7 @@ const DropDownMenuItemContent = ({
   onClick,
 }: DropDownMenuItemContentProps) => (
   <DropdownMenuItem
-    className="flex items-center cursor-pointer hover:bg-gray-100 p-2 focus-visible:border-0 w-[275px] gap-1.5"
+    className="flex items-center cursor-pointer hover:bg-gray-100 p-2 focus-visible:border-0 w-[260px] gap-1.5"
     onClick={onClick}
   >
     {photoURL && (
@@ -81,7 +86,7 @@ function PushToContentList({
   setShowOverlay,
 }: {
   ownerUid: string;
-  setShowOverlay: (show: boolean) => void;
+  setShowOverlay: (overlayTitle: string) => void;
 }) {
   const [feed, setFeed] = useState<Feed | null>(null);
   const [feedTags, setFeedTags] = useState<FeedTag[]>([]);
@@ -100,13 +105,15 @@ function PushToContentList({
     useState<ISelectedContent | null>(null);
 
   const [customCurations, setCustomCurations] = useState<Curation[]>([]);
-  const [historyCuration, setHistoryCuration] = useState<Curation>();
+  // const [historyCuration, setHistoryCuration] = useState<Curation>();
   const [favoriteCuration, setFavoriteCuration] = useState<Curation>();
-  // const [queudCuration, setQueudCuration] = useState<Curation>();
-  // const [markedAsReadCuration, setMarkedAsReadCuration] = useState<Curation>();
+  const [queudCuration, setQueudCuration] = useState<Curation>();
+  const [markedAsReadCuration, setMarkedAsReadCuration] = useState<Curation>();
 
   const [pushLinkLoading, setPushedLinkLoading] = useState(false);
   const [showInvalidUrlMessage, setShowInvalidUrlMessage] = useState(false);
+
+  const MAX_ANNOTATION_BODY_LENGTH = 512;
 
   useEffect(() => {
     (async () => {
@@ -123,10 +130,10 @@ function PushToContentList({
 
         const userCurationsResponse = await getCurationsByUid(ownerUid);
         setCustomCurations(userCurationsResponse.custom);
-        setHistoryCuration(userCurationsResponse.history);
+        // setHistoryCuration(userCurationsResponse.history);
         setFavoriteCuration(userCurationsResponse.favorites);
-        // setQueudCuration(userCurationsResponse.queued);
-        // setMarkedAsReadCuration(userCurationsResponse.markedAsRead);
+        setQueudCuration(userCurationsResponse.queued);
+        setMarkedAsReadCuration(userCurationsResponse.markedAsRead);
       } catch (error) {
         console.error(error);
       }
@@ -194,7 +201,7 @@ function PushToContentList({
         );
 
         setPushedLinkLoading(false);
-        setShowOverlay(true);
+        setShowOverlay('My feed');
       } else if (selectedContentList.contentType === 'curation') {
         const response = await pushToOwnerCuration(
           selectedContentList.guid,
@@ -203,7 +210,7 @@ function PushToContentList({
         );
 
         setPushedLinkLoading(false);
-        setShowOverlay(true);
+        setShowOverlay(selectedContentList.name);
       }
     } catch (error) {
       console.error(error);
@@ -228,26 +235,24 @@ function PushToContentList({
             handlePushToContentList();
           }}
         >
-          <div>
-            <Textarea
-              // id=""
-              rows={4}
-              value={currentTabUrl}
-              className="resize-none"
-              onChange={(event) => {
-                setCurrentTabUrl(event.target.value);
-              }}
-            />
-            <p className="text-xs mt-0.5 text-red-400 h-5 leading-none">
+          <Textarea
+            placeholder="Link body"
+            rows={4}
+            value={currentTabUrl}
+            className="resize-none"
+            onChange={(event) => {
+              setCurrentTabUrl(event.target.value);
+            }}
+          />
+
+          <div className="relative h-5 flex flex-col justify-center">
+            <p className="text-xs text-red-400 pl-1">
               {showInvalidUrlMessage &&
                 currentTabUrl.length > 0 &&
                 'Invalid URL'}
             </p>
           </div>
 
-          <div className="flex justify-center pb-4">
-            <ArrowLongDownIcon className="w-4 h-4 text-gray-600" />
-          </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="w-full flex justify-between">
@@ -283,22 +288,8 @@ function PushToContentList({
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
                   <p className="px-2 py-0.5 font-semibold text-black text-xs">
-                    Pinned Curations
+                    Native Curations
                   </p>
-                  {historyCuration && (
-                    <DropDownMenuItemContent
-                      name={historyCuration.name}
-                      // photoURL={historyCuration.photoURL}
-                      onClick={() =>
-                        setSelectedContentList({
-                          ...historyCuration,
-                          contentType: 'curation',
-                        })
-                      }
-                    >
-                      <StarIcon className="w-4 h-4 text-amber-500" />
-                    </DropDownMenuItemContent>
-                  )}
                   {favoriteCuration && (
                     <DropDownMenuItemContent
                       name={favoriteCuration.name}
@@ -310,7 +301,35 @@ function PushToContentList({
                         })
                       }
                     >
-                      <StarIcon className="w-4 h-4 text-amber-500" />
+                      <HeartIcon className="w-4 h-4 text-gray-800" />
+                    </DropDownMenuItemContent>
+                  )}
+                  {queudCuration && (
+                    <DropDownMenuItemContent
+                      name={queudCuration.name}
+                      // photoURL={historyCuration.photoURL}
+                      onClick={() =>
+                        setSelectedContentList({
+                          ...queudCuration,
+                          contentType: 'curation',
+                        })
+                      }
+                    >
+                      <InboxArrowDownIcon className="w-4 h-4 text-gray-800" />
+                    </DropDownMenuItemContent>
+                  )}
+                  {markedAsReadCuration && (
+                    <DropDownMenuItemContent
+                      name={markedAsReadCuration.name}
+                      // photoURL={historyCuration.photoURL}
+                      onClick={() =>
+                        setSelectedContentList({
+                          ...markedAsReadCuration,
+                          contentType: 'curation',
+                        })
+                      }
+                    >
+                      <BookOpenCheckIcon className="w-4 h-4 text-gray-800" />
                     </DropDownMenuItemContent>
                   )}
                 </DropdownMenuGroup>
@@ -338,96 +357,88 @@ function PushToContentList({
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {selectedContentList.contentType === 'feed' && (
-            <div className="mt-1">
-              <div className="flex items-center justify-start gap-2">
-                <ChevronDownIcon
-                  className={`h-2.5 w-2.5 text-blue-gray-500 transition-transform hover:cursor-pointer ${
-                    isShowingFeedTagOptions ? '' : '-rotate-90'
-                  }`}
-                  onClick={() => {
-                    setIsShowingFeedTagOptions(!isShowingFeedTagOptions);
-                  }}
-                />
-                <Typography
-                  variant="small"
-                  color="blue-gray"
-                  onClick={() => {
-                    setIsShowingFeedTagOptions(!isShowingFeedTagOptions);
-                  }}
-                  className="hover:cursor-pointer text-xs"
-                >
-                  Tag it up
-                </Typography>
-              </div>
-              <div className="mt-1 flex flex-wrap gap-x-2 gap-y-1">
-                {isShowingFeedTagOptions &&
-                  feedTags.map((tag) => {
-                    return (
-                      <div
-                        className="relative cursor-pointer"
-                        onClick={() => {
-                          toggleApplyTag(tag.ftid);
-                        }}
-                      >
-                        {appliedTagFtids.includes(tag.ftid) && (
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="bg-gray-300 opacity-80 rounded-md border-2 border-black w-full h-full"></div>
-                            <CheckIcon className="w-4 h-4 text-green-600 absolute" />
-                          </div>
-                        )}
-                        <FeedTagBadge tag={tag} />
-                      </div>
-                    );
-                  })}
-              </div>
-            </div>
-          )}
+          <Button
+            type="submit"
+            variant="default"
+            className="mt-2 w-full"
+            disabled={currentTabUrl.length === 0}
+          >
+            Push link
+            {pushLinkLoading && (
+              <Spinner color="gray" className="w-4 h-4 ml-2"></Spinner>
+            )}
+          </Button>
 
-          <div className="mt-1 h-fit">
-            <div className="flex items-center justify-start gap-2">
-              <ChevronDownIcon
-                className={`h-2.5 w-2.5 text-blue-gray-500 transition-transform hover:cursor-pointer ${
-                  isShowingContentAnnotationOptions ? '' : '-rotate-90'
-                }`}
-                onClick={() => {
-                  setIsShowingContentAnnotationOptions(
-                    !isShowingContentAnnotationOptions
-                  );
-                }}
-              />
+          <div className="flex justify-center mt-6">
+            <p className="absolute transform translate-y-0.5 -translate-x-8 text-[0.65rem]">
+              (optional)
+            </p>
+            <ArrowLongDownIcon className="w-5 h-5 text-gray-600" />
+          </div>
+
+          {selectedContentList.contentType === 'feed' && (
+            <div className="mt-4">
               <Typography
                 variant="small"
                 color="blue-gray"
                 onClick={() => {
-                  setIsShowingContentAnnotationOptions(
-                    !isShowingContentAnnotationOptions
-                  );
+                  setIsShowingFeedTagOptions(!isShowingFeedTagOptions);
                 }}
-                className="hover:cursor-pointer text-xs"
+                className="hover:cursor-pointer text-xs font-semibold"
               >
-                Annotation
+                Tag it up
               </Typography>
+              <div className="mt-1 flex flex-wrap gap-x-1 gap-y-1">
+                {feedTags.map((tag) => {
+                  return (
+                    <div
+                      className="relative cursor-pointer"
+                      onClick={() => {
+                        toggleApplyTag(tag.ftid);
+                      }}
+                    >
+                      {appliedTagFtids.includes(tag.ftid) && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="bg-gray-300 opacity-80 rounded-md border-2 border-black w-full h-full"></div>
+                          <CheckIcon className="w-4 h-4 text-green-600 absolute" />
+                        </div>
+                      )}
+                      <FeedTagBadge tag={tag} />
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-            <div className="mt-1 flex flex-wrap gap-x-2 gap-y-1">
-              {isShowingContentAnnotationOptions && (
-                <Textarea
-                  // id=""
-                  rows={4}
-                  value={annotationBody}
-                  className="resize-none"
-                  onChange={(event) => {
-                    setAnnotationBody(event.target.value);
-                  }}
-                />
-              )}
-            </div>
-          </div>
+          )}
+
+          <Typography
+            variant="small"
+            color="blue-gray"
+            onClick={() => {
+              setIsShowingFeedTagOptions(!isShowingFeedTagOptions);
+            }}
+            className="hover:cursor-pointer text-xs font-semibold mt-5"
+          >
+            Annotation
+          </Typography>
+
+          <Textarea
+            rows={4}
+            placeholder="Annotation body"
+            value={annotationBody}
+            className="resize-none mt-1 scrollbar scrollbar-thin overflow-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100"
+            onChange={(event) => {
+              setAnnotationBody(event.target.value);
+            }}
+          />
+          <p className="flex justify-end mt-0.5">
+            {annotationBody.length} / {MAX_ANNOTATION_BODY_LENGTH}
+          </p>
 
           <Button
             type="submit"
             variant="default"
-            className="w-full mt-5"
+            className="w-full mt-4"
             disabled={currentTabUrl.length === 0}
           >
             Push link

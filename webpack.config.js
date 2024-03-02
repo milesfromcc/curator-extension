@@ -36,9 +36,11 @@ if (fileSystem.existsSync(secretsPath)) {
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 var options = {
+  devServer: {
+    https: true,
+  },
   mode: process.env.NODE_ENV || 'development',
   entry: {
-    newtab: path.join(__dirname, 'app', 'pages', 'Newtab', 'index.jsx'),
     options: path.join(__dirname, 'app', 'pages', 'Options', 'index.jsx'),
     popup: path.join(__dirname, 'app', 'pages', 'Popup', 'index.tsx'),
     background: path.join(__dirname, 'app', 'pages', 'Background', 'index.js'),
@@ -177,7 +179,7 @@ var options = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: 'app/assets/img/curation_space_logo.png',
+          from: 'app/assets/img/logo.png',
           to: path.join(__dirname, 'build'),
           force: true,
         },
@@ -186,17 +188,11 @@ var options = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: 'app/assets/img/curation_space_logo.png',
+          from: 'app/assets/img/logo.png',
           to: path.join(__dirname, 'build'),
           force: true,
         },
       ],
-    }),
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'app', 'pages', 'Newtab', 'index.html'),
-      filename: 'newtab.html',
-      chunks: ['newtab'],
-      cache: false,
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'app', 'pages', 'Options', 'index.html'),
