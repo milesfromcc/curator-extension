@@ -15,3 +15,9 @@ ADDING THE EXTENSION TO YOUR BROWSER:
 NEED TO KNOW:
 
 - there are always going to be errors while in development mode so don't worry too much if those don't go away
+
+- you can try cloning from this commit if you want to deal with less errors: https://github.com/milesfromcc/curator-extension/commit/b3372460fd0ac1ca3368f7409b783d4c0dec3dd2
+
+- or potentially this earlier one which is even earlier: https://github.com/milesfromcc/curator-extension/commit/e26701a74e733bc61e611231b20bda8e831f01f5
+
+good luck and lemme know what i can do to help!
