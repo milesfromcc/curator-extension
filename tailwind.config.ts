@@ -6,7 +6,10 @@ import withMT from '@material-tailwind/react/utils/withMT';
 
 export default withMT({
   darkMode: ['class'],
-  content: ['./app/**/*.{js,jsx,ts,tsx}'],
+  content: [
+    './app/**/*.{ts,tsx,js,jsx}',
+],
+  // content: ['./app/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
       backdropBlur: {

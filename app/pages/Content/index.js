@@ -1,44 +1,89 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Popup from '../Popup/Popup';
-import '../../tailwind.css';
+import App from './App';
 
-const iframe = document.createElement('iframe');
-iframe.id = 'curation-space-sidebar';
-document.body.appendChild(iframe);
+const root = document.createElement('div');
+root.id = 'wrapper';
+document.body.appendChild(root);
 
-iframe.onload = () => {
-  iframe.contentWindow.document.open();
-  iframe.contentWindow.document.write(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <link rel="stylesheet" href="${chrome.runtime.getURL('tailwind.css')}">
-        <link rel="stylesheet" href="${chrome.runtime.getURL(
-          'content.styles.css'
-        )}">
-        <script src="${chrome.runtime.getURL(
-          'contentScript.bundle.js'
-        )}"></script>
-    </head>
-    <body></body>
-    </html>
-  `);
-  iframe.contentWindow.document.close();
+ReactDOM.createRoot(root).render(<App />);
 
-  iframe.contentWindow.document.addEventListener('DOMContentLoaded', () => {
-    const iframeDocument = iframe.contentDocument;
+// import React from 'react';
+// import ReactDOM from 'react-dom';
+// import PropTypes from 'prop-types';
+// import App from './App';
 
-    const ELEMENT_overlay = iframeDocument.createElement('div');
-    ELEMENT_overlay.id = 'overlay';
-    iframeDocument.body.appendChild(ELEMENT_overlay);
+// class IframeDocumentProvider extends React.Component {
+//   getChildContext() {
+//     return { document: this.props.iframeDocument };
+//   }
 
-    const ELEMENT_sidebar = iframeDocument.createElement('div');
-    ELEMENT_sidebar.id = 'sidebar';
-    ELEMENT_overlay.appendChild(ELEMENT_sidebar);
+//   render() {
+//     return this.props.children;
+//   }
+// }
 
-    ReactDOM.render(<Popup />, ELEMENT_sidebar);
-  });
-};
+// IframeDocumentProvider.childContextTypes = {
+//   document: PropTypes.object,
+// };
 
-iframe.src = 'about:blank';
+// const iframe = document.createElement('iframe');
+// iframe.id = 'curation-space-sidebar';
+// document.body.appendChild(iframe);
+
+// iframe.onload = () => {
+//   iframe.contentWindow.document.open();
+//   iframe.contentWindow.document.write(`
+//     <!DOCTYPE html>
+//     <html>
+//     <head>
+//         <link rel="stylesheet" href="${chrome.runtime.getURL(
+//           'content.styles.css'
+//         )}">
+//         <link rel="stylesheet" href="${chrome.runtime.getURL(
+//           'processed-tailwind.css'
+//         )}">
+//         <script src="${chrome.runtime.getURL(
+//           'contentScript.bundle.js'
+//         )}"></script>
+//     </head>
+//     <body></body>
+//     </html>
+//   `);
+//   iframe.contentWindow.document.close();
+
+//   iframe.contentWindow.document.addEventListener('DOMContentLoaded', () => {
+//     const iframeDocument = iframe.contentDocument;
+
+//     let ELEMENT_overlay = iframeDocument.getElementById('overlay');
+
+//     if (!ELEMENT_overlay) {
+//       ELEMENT_overlay = iframeDocument.createElement('div');
+//       ELEMENT_overlay.id = 'overlay';
+//       iframeDocument.body.appendChild(ELEMENT_overlay);
+//     }
+
+//     let ELEMENT_sidebar = iframeDocument.getElementById('sidebar');
+
+//     if (!ELEMENT_sidebar) {
+//       ELEMENT_sidebar = iframeDocument.createElement('div');
+//       ELEMENT_sidebar.id = 'sidebar';
+//       ELEMENT_overlay.appendChild(ELEMENT_sidebar);
+//     }
+
+//     if (!ELEMENT_sidebar.hasChildNodes()) {
+//       const root = ReactDOM.createRoot(ELEMENT_sidebar);
+//       root.render(
+//         ReactDOM.createPortal(
+//           <IframeDocumentProvider iframeDocument={iframe.contentDocument}>
+//             <App />
+//           </IframeDocumentProvider>,
+//           ELEMENT_sidebar
+//         )
+//       );
+//     }
+//   });
+// };
+
+// iframe.src = 'about:blank';
+// iframe.sandbox = 'allow-scripts';

@@ -1,5 +1,3 @@
-import { FeedTag } from '../entities/tags';
-
 export type FeedTagBadgeProps = {
   tag: FeedTag;
   // editMode?: boolean;
@@ -52,7 +50,8 @@ import { cva, type VariantProps } from 'class-variance-authority';
 
 import { Button } from './ui/button';
 import { X } from 'lucide-react';
-import { cn } from '../lib/utils';
+import { FeedTag } from '../../../entities/tags';
+import { cn } from '../../../lib/utils';
 
 const badgeVariants = cva(
   'border-transparent inline-flex items-center rounded-md border border-gray-200 px-1.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-gray-950 focus:ring-offset-2 dark:border-gray-800 dark:focus:ring-gray-300',

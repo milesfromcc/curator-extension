@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Typography } from '@material-tailwind/react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { authenticateUser } from '../services/app.routes.service';
-import { User } from '../entities/user';
+import { authenticateUser } from '../../../services/app.routes.service';
+import { User } from '../../../entities/user';
 
 type LoginProps = {
   setUser: (user: User) => void;

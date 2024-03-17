@@ -45,11 +45,11 @@ var options = {
     popup: path.join(__dirname, 'app', 'pages', 'Popup', 'index.tsx'),
     background: path.join(__dirname, 'app', 'pages', 'Background', 'index.js'),
     contentScript: path.join(__dirname, 'app', 'pages', 'Content', 'index.js'),
-    devtools: path.join(__dirname, 'app', 'pages', 'Devtools', 'index.js'),
+    // devtools: path.join(__dirname, 'app', 'pages', 'Devtools', 'index.js'),
     panel: path.join(__dirname, 'app', 'pages', 'Panel', 'index.jsx'),
   },
   chromeExtensionBoilerplate: {
-    notHotReload: ['background', 'contentScript', 'devtools'],
+    notHotReload: ['background', 'contentScript'],
   },
   output: {
     filename: '[name].bundle.js',
@@ -179,7 +179,7 @@ var options = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: 'app/assets/img/logo.png',
+          from: 'app/processed-tailwind.css',
           to: path.join(__dirname, 'build'),
           force: true,
         },
@@ -194,6 +194,15 @@ var options = {
         },
       ],
     }),
+    // new CopyWebpackPlugin({
+    //   patterns: [
+    //     {
+    //       from: 'app/assets/img/logo.png',
+    //       to: path.join(__dirname, 'build'),
+    //       force: true,
+    //     },
+    //   ],
+    // }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'app', 'pages', 'Options', 'index.html'),
       filename: 'options.html',
@@ -206,12 +215,12 @@ var options = {
       chunks: ['popup'],
       cache: false,
     }),
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'app', 'pages', 'Devtools', 'index.html'),
-      filename: 'devtools.html',
-      chunks: ['devtools'],
-      cache: false,
-    }),
+    // new HtmlWebpackPlugin({
+    //   template: path.join(__dirname, 'app', 'pages', 'Devtools', 'index.html'),
+    //   filename: 'devtools.html',
+    //   chunks: ['devtools'],
+    //   cache: false,
+    // }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'app', 'pages', 'Panel', 'index.html'),
       filename: 'panel.html',

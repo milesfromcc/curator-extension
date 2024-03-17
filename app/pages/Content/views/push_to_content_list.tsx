@@ -37,11 +37,11 @@ import {
   getFeedWithFeedTagsByUid,
   pushToOwnerCuration,
   pushToOwnerFeed,
-} from '../services/app.routes.service';
+} from '../../../services/app.routes.service';
 import { FeedTagBadge } from '../components/feedTagBadge';
-import { FeedTag } from '../entities/tags';
-import { ContentList, Curation, Feed } from '../entities/lists';
-import { isFetchableURL } from '../utils/inputValidation';
+import { FeedTag } from '../../../entities/tags';
+import { ContentList, Curation, Feed } from '../../../entities/lists';
+import { isFetchableURL } from '../../../utils/inputValidation';
 import { BookOpenCheckIcon } from 'lucide-react';
 
 interface DropDownMenuItemContentProps {
@@ -218,11 +218,7 @@ function PushToContentList({
   };
 
   useEffect(() => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs[0]?.url) {
-        setCurrentTabUrl(tabs[0].url);
-      }
-    });
+    setCurrentTabUrl(window.location.href);
   }, []);
 
   return (

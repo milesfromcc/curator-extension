@@ -1,12 +1,12 @@
-html,
+/* html,
 body,
 #root {
   margin: 0;
   padding: 0;
   border: 0;
-}
+} */
 
-#curation-space-sidebar {
+#wrapper {
   z-index: 2000000001;
   position: fixed;
   height: 100%;

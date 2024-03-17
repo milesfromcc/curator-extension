@@ -8,7 +8,9 @@
     "url": ""
   },
   "scripts": {
-    "build": "node utils/build.js",
+    "build": "npm run build:css && npm run build:app",
+    "build:app": "node utils/build.js",
+    "build:css": "postcss app/tailwind.css -o app/processed-tailwind.css",
     "start": "node utils/webserver.js"
   },
   "dependencies": {
@@ -23,10 +25,9 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "lucide-react": "^0.338.0",
+    "postcss-cli": "^11.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "tailwind-merge": "^2.2.1",
-    "tailwind-scrollbar": "^3.1.0",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
@@ -47,6 +48,7 @@
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.3",
     "eslint": "^8.31.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-plugin-flowtype": "^8.0.3",
     "eslint-plugin-import": "^2.27.4",
@@ -64,6 +66,8 @@
     "react-refresh-typescript": "^2.0.7",
     "source-map-loader": "^3.0.1",
     "style-loader": "^3.3.1",
+    "tailwind-merge": "^2.2.1",
+    "tailwind-scrollbar": "^3.1.0",
     "tailwindcss": "^3.4.1",
     "terser-webpack-plugin": "^5.3.6",
     "ts-loader": "^9.4.2",
