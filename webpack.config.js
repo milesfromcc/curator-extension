@@ -179,6 +179,15 @@ var options = {
     new CopyWebpackPlugin({
       patterns: [
         {
+          from: 'app/pages/Content/iframe.styles.css',
+          to: path.join(__dirname, 'build'),
+          force: true,
+        },
+      ],
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
           from: 'app/processed-tailwind.css',
           to: path.join(__dirname, 'build'),
           force: true,

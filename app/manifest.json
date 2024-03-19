@@ -4,6 +4,7 @@
   "description": "A chrome extension boilerplate built with React 17, Webpack 5, and Webpack Dev Server 4",
   "options_page": "options.html",
   "background": { "service_worker": "background.bundle.js" },
+  "permissions": ["activeTab"],
   "action": {
     "default_popup": "popup.html",
     "default_icon": "logo.png"
@@ -16,13 +17,22 @@
       "run_at": "document_end",
       "matches": ["http://*/*", "https://*/*", "<all_urls>"],
       "js": ["contentScript.bundle.js"],
-      "css": ["content.styles.css", "processed-tailwind.css"]
+      "css": [
+        "content.styles.css",
+        "processed-tailwind.css",
+        "iframe.styles.css"
+      ]
     }
   ],
   "devtools_page": "devtools.html",
   "web_accessible_resources": [
     {
-      "resources": ["processed-tailwind.css", "content.styles.css", "logo.png"],
+      "resources": [
+        "processed-tailwind.css",
+        "iframe.styles.css",
+        "content.styles.css",
+        "logo.png"
+      ],
       "matches": ["<all_urls>"]
     }
   ]

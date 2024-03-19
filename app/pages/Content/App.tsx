@@ -9,51 +9,121 @@ import React, {
 
 import ReactDOM from 'react-dom';
 
-import { createPortal } from 'react-dom';
+// import { createPortal } from 'react-dom';
 
-// import './content.styles.css';
+import CuratorExtensionApp from '../Popup/Popup';
+
+import './content.styles.css';
 import '../../processed-tailwind.css';
 
-const IFrameContext = createContext<Document | null>(null);
+// const IFrameContext = createContext<Document | null>(null);
 
-interface IFrameProps extends IframeHTMLAttributes<HTMLIFrameElement> {
-  children?: ReactNode;
+// interface IFrameProps extends IframeHTMLAttributes<HTMLIFrameElement> {
+//   children?: ReactNode;
+// }
+
+// const IFrame: React.FC<IFrameProps> = ({ children, ...props }) => {
+//   const [contentRef, setContentRef] = useState<HTMLBodyElement | null>(null);
+//   const iframeRef = useRef<HTMLIFrameElement>(null);
+//   // const [iframeDoc, setIframeDoc] = useState<Document | null>(null);
+//   const [isIframeLoaded, setIsIframeLoaded] = useState(false);
+//   const [portal, setPortal] = useState<React.ReactPortal | null>(null);
+
+//   useEffect(() => {
+//     const iframe = iframeRef.current;
+
+//     const loadIframeContent = () => {
+//       const iframeContent = iframe?.contentWindow?.document.body;
+//       const iframeHead = iframe?.contentWindow?.document.head;
+
+//       if (iframeContent) {
+//         setContentRef(iframeContent as HTMLBodyElement);
+//         if (children && iframeContent && React.isValidElement(children)) {
+//           setPortal(ReactDOM.createPortal(children, iframeContent));
+//           // ReactDOM.createPortal(children, iframeContent);
+//         }
+//       }
+
+//       if (iframeHead) {
+//         const linkA = document.createElement('link');
+//         const linkB = document.createElement('link');
+//         linkA.rel = 'stylesheet';
+//         linkB.rel = 'stylesheet';
+//         linkA.href = chrome.runtime.getURL('content.style.css');
+//         linkB.href = chrome.runtime.getURL('processed-tailwind.css');
+//         iframeHead.appendChild(linkA);
+//         iframeHead.appendChild(linkB);
+//       }
+
+//       // setIframeDoc(
+//       //   iframe?.contentDocument || iframe?.contentWindow?.document || null
+//       // );
+//     };
+
+//     if (iframe && isIframeLoaded) {
+//       loadIframeContent();
+//     }
+//   }, [isIframeLoaded, children]);
+
+//   return (
+//     // <IFrameContext.Provider value={iframeDoc}>
+//     <iframe
+//       title="curation space extension wrapper"
+//       ref={iframeRef}
+//       onLoad={() => setIsIframeLoaded(true)}
+//       {...props}
+//     />
+//     // {portal}
+//     // </IFrameContext.Provider>
+//   );
+// };
+
+// const App = () => {
+//   return (
+//     <IFrame srcDoc="<html><body></body></html>" className="h-full w-full">
+//       <div className="fixed inset-0 z-100 w-full h-full flex justify-end">
+//         <div className="min-w-[240px] w-[20%] bg-white border-l-2 border-gray-200 shadow-md">
+//           <CuratorExtensionApp />
+//         </div>
+//       </div>
+//     </IFrame>
+//   );
+// };
+
+// export default App;
+
+// Create a context with an initial value of null
+const IFrameContext = React.createContext<Document | null>(null);
+
+interface IFrameProps extends React.HTMLAttributes<HTMLIFrameElement> {
+  children?: React.ReactNode;
+  srcDoc?: string;
 }
 
 const IFrame: React.FC<IFrameProps> = ({ children, ...props }) => {
-  const [contentRef, setContentRef] = useState<HTMLBodyElement | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [iframeDoc, setIframeDoc] = useState<Document | null>(null);
   const [isIframeLoaded, setIsIframeLoaded] = useState(false);
+  const [shadowRoot, setShadowRoot] = useState<ShadowRoot | null>(null);
 
   useEffect(() => {
     const iframe = iframeRef.current;
-
     const loadIframeContent = () => {
-      const iframeContent = iframe?.contentWindow?.document.body;
-      const iframeHead = iframe?.contentWindow?.document.head;
-
-      if (iframeContent) {
-        setContentRef(iframeContent as HTMLBodyElement);
-        if (children && iframeContent && React.isValidElement(children)) {
-          ReactDOM.render(children, iframeContent);
-        }
-      }
-
-      if (iframeHead) {
-        const linkA = document.createElement('link');
-        const linkB = document.createElement('link');
+      const iframeDoc =
+        iframe?.contentDocument || iframe?.contentWindow?.document;
+      if (iframeDoc) {
+        const iframeHead = iframeDoc.head;
+        const linkA = iframeDoc.createElement('link');
+        const linkB = iframeDoc.createElement('link');
         linkA.rel = 'stylesheet';
         linkB.rel = 'stylesheet';
         linkA.href = chrome.runtime.getURL('content.style.css');
         linkB.href = chrome.runtime.getURL('processed-tailwind.css');
         iframeHead.appendChild(linkA);
         iframeHead.appendChild(linkB);
-      }
 
-      setIframeDoc(
-        iframe?.contentDocument || iframe?.contentWindow?.document || null
-      );
+        const root = iframeDoc.body.attachShadow({ mode: 'open' });
+        setShadowRoot(root);
+      }
     };
 
     if (iframe && isIframeLoaded) {
@@ -61,27 +131,53 @@ const IFrame: React.FC<IFrameProps> = ({ children, ...props }) => {
     }
   }, [isIframeLoaded, children]);
 
+  // return (
+  //   <IFrameContext.Provider
+  //     value={iframeRef.current?.contentWindow?.document || null}
+  //   >
+  //     <iframe
+  //       title="curation space extension wrapper"
+  //       ref={iframeRef}
+  //       onLoad={() => setIsIframeLoaded(true)}
+  //       {...props}
+  //     />
+  //     {isIframeLoaded &&
+  //       iframeRef.current?.contentWindow?.document &&
+  //       ReactDOM.createPortal(
+  //         children,
+  //         iframeRef.current.contentWindow.document.body
+  //       )}
+  //   </IFrameContext.Provider>
+  // );
+
   return (
-    <IFrameContext.Provider value={iframeDoc}>
+    <IFrameContext.Provider
+      value={iframeRef.current?.contentWindow?.document || null}
+    >
       <iframe
-        title="IFrame"
+        title="curation space extension wrapper"
         ref={iframeRef}
         onLoad={() => setIsIframeLoaded(true)}
         {...props}
       />
+      {isIframeLoaded &&
+        shadowRoot &&
+        ReactDOM.createPortal(children, shadowRoot)}
     </IFrameContext.Provider>
   );
 };
 
 const App = () => {
   return (
-    <IFrame src="about:blank" className="h-full w-full">
-      <div className="fixed inset-0 z-100 w-full h-full flex justify-end">
-        <div className="min-w-80 bg-white border-l-2 border-gray-200 shadow-md">
-          sdfsdfsdfsdfsdfsdffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-        </div>
-      </div>
-    </IFrame>
+    <CuratorExtensionApp />
+
+    // <IFrame srcDoc="<html><body></body></html>" className="h-full w-full">
+    //   <div className="fixed inset-0 z-100 w-full h-full flex justify-end">
+    //     <div className="min-w-[240px] w-[20%] bg-white border-l-2 border-gray-200 shadow-md">
+    //       <CuratorExtensionApp />
+    //     </div>
+    //   </div>
+    // </IFrame>
   );
 };
 

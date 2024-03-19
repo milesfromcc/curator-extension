@@ -6,7 +6,7 @@ body,
   border: 0;
 } */
 
-#wrapper {
+#curation_space_wrapper {
   z-index: 2000000001;
   position: fixed;
   height: 100%;
@@ -15,16 +15,16 @@ body,
   color-scheme: auto;
 }
 
-#overlay {
+#curation_space_overlay {
   box-sizing: border-box;
   height: 100vh;
   width: 100vw;
   display: grid;
-  grid-template: 'container sidebar' 100% / 1fr 320px;
+  grid-template: 'container sidebar' 100% / 1fr 360px;
   overflow-y: hidden;
 }
 
-#sidebar {
+#curation_space_sidebar {
   box-sizing: border-box;
   position: relative;
   grid-area: sidebar;
@@ -35,4 +35,11 @@ body,
   box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 5px 0px;
   outline: none;
   line-height: 1.4;
+  padding-right: 8px;
+}
+
+#curation_space_sidebar > iframe {
+  height: 100%;
+  width: 100%;
+  background-color: rgb(255, 255, 255);
 }

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
@@ -80,6 +81,25 @@ const DropDownMenuItemContent = ({
     </p>
   </DropdownMenuItem>
 );
+
+// const MyDropdownMenu = ({ children }) => {
+//   const dropdownContainerRef = useRef(null);
+
+//   useEffect(() => {
+//     const iframe = document.getElementById('my-iframe');
+//     const iframeDocument =
+//       iframe.contentDocument || iframe.contentWindow.document;
+//     dropdownContainerRef.current = iframeDocument.createElement('div');
+//     iframeDocument.body.appendChild(dropdownContainerRef.current);
+//     return () => {
+//       iframeDocument.body.removeChild(dropdownContainerRef.current);
+//     };
+//   }, []);
+
+//   return dropdownContainerRef.current
+//     ? createPortal(children, dropdownContainerRef.current)
+//     : null;
+// };
 
 function PushToContentList({
   ownerUid,
@@ -200,6 +220,8 @@ function PushToContentList({
           annotationBody
         );
 
+        _setAppliedTagFtids([]);
+        setAnnotationBody('');
         setPushedLinkLoading(false);
         setShowOverlay('My feed');
       } else if (selectedContentList.contentType === 'curation') {
@@ -209,6 +231,7 @@ function PushToContentList({
           annotationBody
         );
 
+        setAnnotationBody('');
         setPushedLinkLoading(false);
         setShowOverlay(selectedContentList.name);
       }
@@ -218,7 +241,19 @@ function PushToContentList({
   };
 
   useEffect(() => {
-    setCurrentTabUrl(window.location.href);
+    if (selectedContentList !== null) {
+      _setAppliedTagFtids([]);
+      setAnnotationBody('');
+    }
+  }, [selectedContentList]);
+
+  useEffect(() => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs[0]?.url) {
+        setCurrentTabUrl(tabs[0].url);
+      }
+    });
+    // setCurrentTabUrl(window.location.href);
   }, []);
 
   return (
@@ -240,7 +275,6 @@ function PushToContentList({
               setCurrentTabUrl(event.target.value);
             }}
           />
-
           <div className="relative h-5 flex flex-col justify-center">
             <p className="text-xs text-red-400 pl-1">
               {showInvalidUrlMessage &&
@@ -248,7 +282,7 @@ function PushToContentList({
                 'Invalid URL'}
             </p>
           </div>
-
+          {/* {createPortal( */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="w-full flex justify-between">
@@ -275,7 +309,10 @@ function PushToContentList({
                   <DropDownMenuItemContent
                     name={feed.name}
                     onClick={() =>
-                      setSelectedContentList({ ...feed, contentType: 'feed' })
+                      setSelectedContentList({
+                        ...feed,
+                        contentType: 'feed',
+                      })
                     }
                   >
                     <SignalIcon className="w-4 h-4" />
@@ -352,7 +389,9 @@ function PushToContentList({
               </ScrollArea>
             </DropdownMenuContent>
           </DropdownMenu>
-
+          {/* , */}
+          {/* dropdownMenuContainerRef.current
+          )} */}
           <Button
             type="submit"
             variant="default"
@@ -364,14 +403,12 @@ function PushToContentList({
               <Spinner color="gray" className="w-4 h-4 ml-2"></Spinner>
             )}
           </Button>
-
           <div className="flex justify-center mt-6">
             <p className="absolute transform translate-y-0.5 -translate-x-8 text-[0.65rem]">
               (optional)
             </p>
             <ArrowLongDownIcon className="w-5 h-5 text-gray-600" />
           </div>
-
           {selectedContentList.contentType === 'feed' && (
             <div className="mt-4">
               <Typography
@@ -406,7 +443,6 @@ function PushToContentList({
               </div>
             </div>
           )}
-
           <Typography
             variant="small"
             color="blue-gray"
@@ -417,7 +453,6 @@ function PushToContentList({
           >
             Annotation
           </Typography>
-
           <Textarea
             rows={4}
             placeholder="Annotation body"
@@ -430,7 +465,6 @@ function PushToContentList({
           <p className="flex justify-end mt-0.5">
             {annotationBody.length} / {MAX_ANNOTATION_BODY_LENGTH}
           </p>
-
           <Button
             type="submit"
             variant="default"
