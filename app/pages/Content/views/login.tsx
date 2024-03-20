@@ -1,24 +1,34 @@
 import React, { useState } from 'react';
-import { Spinner, Typography } from '@material-tailwind/react';
+import { Spinner } from '@material-tailwind/react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { authenticateUser } from '../../../services/app.routes.service';
 import { User } from '../../../entities/user';
+import { DEFAULT_RESPONSE_ERROR_TEXT } from '../../../entities/response_status';
 
 type LoginProps = {
   setUser: (user: User) => void;
 };
 
 function Login({ setUser }: LoginProps) {
-  const [userAccessToken, setUserAccessToken] = useState('');
+  const [accountAccessToken, setAccountAccessToken] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
+  const [responseErrorText, setResponseErrorText] = useState('');
 
   const handleLoginSubmit = async () => {
     try {
       setLoginLoading(true);
-      const loginUserResponse = await authenticateUser(userAccessToken);
-      localStorage.setItem('user', JSON.stringify(loginUserResponse.user));
-      setUser(loginUserResponse.user);
+      const response = await authenticateUser({
+        accountAccessToken,
+      });
+
+      if (response.success) {
+        localStorage.setItem('user', JSON.stringify(response.data.user));
+        setUser(response.data.user);
+      } else {
+        setResponseErrorText(response.error || DEFAULT_RESPONSE_ERROR_TEXT);
+      }
+
       setLoginLoading(false);
     } catch (error) {
       console.error(error);
@@ -28,11 +38,11 @@ function Login({ setUser }: LoginProps) {
   return (
     <div className="flex flex-col h-full">
       <div className="w-full text-center">
-        <Typography variant="small">To connect your account, go to:</Typography>
-        <Typography variant="small" className="text-xs">
+        <p className="text-sm">To connect your account, go to:</p>
+        <p className="text-xs">
           <strong className="font-semibold">Settings</strong> {' > '}
           <strong className="font-semibold">Access Token</strong>
-        </Typography>
+        </p>
       </div>
 
       <form
@@ -47,14 +57,14 @@ function Login({ setUser }: LoginProps) {
           type="text"
           placeholder="Account access token"
           className="w-full"
-          onChange={(e) => setUserAccessToken(e.target.value)}
-          value={userAccessToken}
+          onChange={(e) => setAccountAccessToken(e.target.value)}
+          value={accountAccessToken}
         ></Input>
         <Button
           type="submit"
           variant="default"
           className="w-full"
-          disabled={userAccessToken.length === 0}
+          disabled={accountAccessToken.length === 0 || loginLoading}
         >
           Connect Account
           {loginLoading && (
@@ -62,6 +72,10 @@ function Login({ setUser }: LoginProps) {
           )}
         </Button>
       </form>
+
+      <p className="text-xs text-red-400 text-center mt-2">
+        {responseErrorText}
+      </p>
     </div>
   );
 }

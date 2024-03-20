@@ -1,13 +1,30 @@
 import { Curation, Feed } from '../entities/lists';
+import { ResponseStatus } from '../entities/response_status';
 import { FeedTag } from '../entities/tags';
 import { User } from '../entities/user';
 
-export async function authenticateUser(
-  userAccessToken: string
-): Promise<{ user: User }> {
+interface IResponse<Data> {
+  success: boolean;
+  data: Data;
+  error: string;
+}
+
+async function returnFormattedResponse(response: Response) {
+  return {
+    success: response.status === ResponseStatus.Success,
+    data: await response.json(),
+    error: response.statusText,
+  };
+}
+
+export async function authenticateUser({
+  accountAccessToken,
+}: {
+  accountAccessToken: string;
+}): Promise<IResponse<{ user: User }>> {
   try {
     const response = await fetch(
-      `http://localhost:3000/api/browser_extension/auth/${userAccessToken}`,
+      `http://localhost:3000/api/browser_extension/auth/${accountAccessToken}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -15,72 +32,97 @@ export async function authenticateUser(
       }
     );
 
-    const responseJson = await response.json();
-    return responseJson;
+    return returnFormattedResponse(response);
   } catch (error) {
     throw error;
   }
 }
 
-export async function getFeedWithFeedTagsByUid(
-  uid: string
-): Promise<{ feed: Feed; feedTags: FeedTag[] }> {
+export async function getFeedWithFeedTagsByUid({
+  uid,
+  accountAccessToken,
+}: {
+  uid: string;
+  accountAccessToken: string;
+}): Promise<IResponse<{ feed: Feed; feedTags: FeedTag[] }>> {
   try {
     const response = await fetch(
       `http://localhost:3000/api/browser_extension/get_feed_with_feed_tags_by_uid/${uid}`,
       {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accountAccessToken}`,
+          'Cache-Control': 'no-cache',
+        },
       }
     );
-    const responseJson = await response.json();
-    return responseJson;
+
+    return returnFormattedResponse(response);
   } catch (error) {
     throw error;
   }
 }
 
-export async function getCurationsByUid(uid: string): Promise<{
-  custom: Curation[];
-  history: Curation;
-  favorites: Curation;
-  queued: Curation;
-  markedAsRead: Curation;
-}> {
+export async function getCurationsByUid({
+  uid,
+  accountAccessToken,
+}: {
+  uid: string;
+  accountAccessToken: string;
+}): Promise<
+  IResponse<{
+    curationsByGroup: {
+      Custom: Curation[];
+      History: Curation[];
+      Favorites: Curation[];
+      Queued: Curation[];
+      MarkedAsRead: Curation[];
+    };
+  }>
+> {
   try {
     const response = await fetch(
       `http://localhost:3000/api/browser_extension/get_curations_by_uid/${uid}`,
       {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accountAccessToken}`,
+          'Cache-Control': 'no-cache',
+        },
       }
     );
-    const responseJson = await response.json();
 
-    return {
-      custom: responseJson.curationsByGroup.Custom,
-      history: responseJson.curationsByGroup.History[0],
-      favorites: responseJson.curationsByGroup.Favorites[0],
-      queued: responseJson.curationsByGroup.Queued[0],
-      markedAsRead: responseJson.curationsByGroup.MarkedAsRead[0],
-    };
+    return returnFormattedResponse(response);
   } catch (error) {
     throw error;
   }
 }
 
-export async function pushToOwnerFeed(
-  uid: string,
-  url: string,
-  feedTagFtids: string[],
-  annotationBody: string
-) {
+export async function pushToOwnerFeed({
+  uid,
+  url,
+  feedTagFtids,
+  annotationBody,
+  accountAccessToken,
+}: {
+  uid: string;
+  url: string;
+  feedTagFtids: string[];
+  annotationBody: string;
+  accountAccessToken: string;
+}): Promise<IResponse<undefined>> {
   try {
     const response = await fetch(
       `http://localhost:3000/api/browser_extension/push_to_feed/${uid}`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accountAccessToken}`,
+          'Cache-Control': 'no-cache',
+        },
         body: JSON.stringify({
           url: url,
           feedTagFtids: feedTagFtids,
@@ -89,23 +131,33 @@ export async function pushToOwnerFeed(
       }
     );
 
-    return await response.json();
+    return returnFormattedResponse(response);
   } catch (error) {
-    console.error(error);
+    throw error;
   }
 }
 
-export async function pushToOwnerCuration(
-  guid: string,
-  url: string,
-  annotationBody: string
-) {
+export async function pushToOwnerCuration({
+  guid,
+  url,
+  annotationBody,
+  accountAccessToken,
+}: {
+  guid: string;
+  url: string;
+  annotationBody: string;
+  accountAccessToken: string;
+}): Promise<IResponse<undefined>> {
   try {
     const response = await fetch(
       `http://localhost:3000/api/browser_extension/push_to_owner_curation_by_guid/${guid}`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accountAccessToken}`,
+          'Cache-Control': 'no-cache',
+        },
         body: JSON.stringify({
           url: url,
           annotationBody: annotationBody,
@@ -113,8 +165,8 @@ export async function pushToOwnerCuration(
       }
     );
 
-    return await response.json();
+    return returnFormattedResponse(response);
   } catch (error) {
-    console.error(error);
+    throw error;
   }
 }

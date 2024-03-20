@@ -43,3 +43,11 @@ export interface Curation extends ContentList {
   visibility: CurationVisibility;
   customSlug?: string;
 }
+
+export interface ISelectedContent extends ContentList {
+  contentType: 'feed' | 'curation';
+}
+
+export interface ISelectedContentOverlay extends ISelectedContent {
+  pushedLinkURL: string;
+}

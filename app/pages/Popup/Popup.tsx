@@ -28,6 +28,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../Content/components/ui/tooltip';
+import { ISelectedContentOverlay } from '../../entities/lists';
+import { Textarea } from '../Content/components/ui/textarea';
 
 const Popup = () => {
   // useEffect(() => {
@@ -44,8 +46,8 @@ const Popup = () => {
   //   };
   // }, []);
 
-  const [showOverlay, setShowOverlay] = useState<boolean>(false);
-  const [overlayTitle, setOverlayTitle] = useState<string>('');
+  const [overlayContentList, setOverlayContentList] =
+    useState<ISelectedContentOverlay | null>(null);
 
   const [user, setUser] = useState<User | null>(
     localStorage.getItem('user')
@@ -76,33 +78,89 @@ const Popup = () => {
 
   return (
     <div className="relative h-full">
-      {showOverlay && (
+      {overlayContentList !== null && (
         <button
-          className="absolute inset-0 flex z-10 flex-col justify-center items-center"
+          className="absolute inset-0 flex z-10 flex-col h-full justify-center items-center"
           onClick={() => {
             window.close();
           }}
         >
           <div className="bg-gray-800 opacity-75 backdrop-blur-2px w-full h-full pointer-events-none"></div>
-          <div className="absolute flex flex-col justify-between items-center p-6 bg-white rounded-lg h-4/5 w-4/5">
-            <div className="flex flex-col items-center">
-              <CheckCircleIcon className="h-16 w-16 text-green-600" />
-              <Typography variant="h6" className="mt-1">
-                Saved to: {overlayTitle}
-              </Typography>
-              <p className="text-sm">Click anywhere to close</p>
+          <div className="absolute flex flex-col bg-white rounded h-4/5 w-4/5">
+            <div className="bg-gray-100 p-2 w-full justify-center items-center rounded-t flex">
+              <CheckCircleIcon className="h-8 w-8 text-green-600" />
             </div>
-            <Button
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowOverlay(false);
-              }}
-              type="submit"
-              variant="outline"
-              className="w-full"
-            >
-              Push another link
-            </Button>
+            <div className="grow w-full flex flex-col justify-between p-2.5 pb-5">
+              <div>
+                <p className="">
+                  Saved to: <strong>{overlayContentList.name}</strong>
+                </p>
+                <div className="mt-2.5">
+                  <Textarea
+                    placeholder="Link body"
+                    rows={4}
+                    disabled
+                    value={overlayContentList.pushedLinkURL}
+                    className="resize-none"
+                  />
+                </div>
+                <div className="mt-1.5">
+                  <p className="group">
+                    <a
+                      href={`https://www.curation.space/${
+                        overlayContentList.contentType === 'feed'
+                          ? 'feed_manager'
+                          : `curation_station/?guid=${overlayContentList.guid}`
+                      }`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="border-b border-black group-hover:border-blue-500 group-hover:text-blue-500"
+                    >
+                      Edit in the{' '}
+                      <span className="text-blue-500">
+                        {overlayContentList.contentType === 'feed'
+                          ? 'Feed Manager'
+                          : 'Curation Station'}
+                      </span>
+                    </a>
+                  </p>
+                  <p className="my-0.5">or</p>
+                  <p className="group">
+                    <a
+                      href={`https://www.curation.space/${
+                        overlayContentList.ownerUid
+                      }/${
+                        overlayContentList.contentType === 'feed'
+                          ? 'feed'
+                          : overlayContentList.guid
+                      }`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="border-b border-black group-hover:border-blue-500 group-hover:text-blue-500"
+                    >
+                      View in{' '}
+                      <span className="capitalize">
+                        {overlayContentList.name}
+                      </span>
+                    </a>
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-y-1.5">
+                <Button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOverlayContentList(null);
+                  }}
+                  type="submit"
+                  variant="default"
+                  className="w-full"
+                >
+                  Push another link
+                </Button>
+                <p className="mt-1">click anywhere to close</p>
+              </div>
+            </div>
           </div>
         </button>
       )}
@@ -213,11 +271,8 @@ const Popup = () => {
           {activeViewTab === 'login' && <Login setUser={setUser} />}
           {activeViewTab === 'push_to_content_list' && user !== null && (
             <PushToContentList
-              ownerUid={user.uid}
-              setShowOverlay={(overlayTitle: string) => {
-                setShowOverlay(true);
-                setOverlayTitle(overlayTitle);
-              }}
+              rootUser={user}
+              setOverlayContentList={setOverlayContentList}
             />
           )}
         </main>
