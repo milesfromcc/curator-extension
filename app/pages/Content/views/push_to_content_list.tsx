@@ -532,7 +532,7 @@ function PushToContentList({
                 rows={4}
                 placeholder="Annotation body"
                 value={annotationBody}
-                className="resize-none mt-1 scrollbar scrollbar-thin overflow-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100"
+                className="resize-none mt-1 scrollbar-thin overflow-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100"
                 onChange={(event) => {
                   setAnnotationBody(event.target.value);
                 }}

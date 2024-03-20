@@ -14,7 +14,7 @@ if (!container) {
 const root = createRoot(container);
 
 root.render(
-  <div className="h-full scrollbar scrollbar-thin overflow-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100">
+  <div className="h-full overflow-auto">
     <Popup />
   </div>
 );

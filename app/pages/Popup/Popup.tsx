@@ -3,7 +3,7 @@ import { Spinner, Typography } from '@material-tailwind/react';
 import Login from '../Content/views/login';
 import PushToContentList from '../Content/views/push_to_content_list';
 
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, CopyPlusIcon, RadioTowerIcon } from 'lucide-react';
 import {
   Cog6ToothIcon,
   Square3Stack3DIcon,
@@ -77,7 +77,13 @@ const Popup = () => {
   };
 
   return (
-    <div className="relative h-full">
+    <div
+      className={`relative h-full ${
+        overlayContentList !== null
+          ? 'overflow-hidden'
+          : 'scrollbar-thin overflow-auto scrollbar-thumb-gray-500 scrollbar-track-gray-100'
+      }`}
+    >
       {overlayContentList !== null && (
         <button
           className="absolute inset-0 flex z-10 flex-col h-full justify-center items-center"
@@ -86,67 +92,89 @@ const Popup = () => {
           }}
         >
           <div className="bg-gray-800 opacity-75 backdrop-blur-2px w-full h-full pointer-events-none"></div>
-          <div className="absolute flex flex-col bg-white rounded h-4/5 w-4/5">
-            <div className="bg-gray-100 p-2 w-full justify-center items-center rounded-t flex">
+          <div className="absolute flex flex-col bg-white rounded h-[400px] w-4/5">
+            <div className="bg-gray-100 p-2.5 w-full justify-center items-center rounded-t flex flex-col">
               <CheckCircleIcon className="h-8 w-8 text-green-600" />
+              <p className="mt-2.5">
+                Saved to{' '}
+                <span className="capitalize">
+                  {overlayContentList.contentType}
+                </span>
+                : <strong>{overlayContentList.name}</strong>
+              </p>
             </div>
             <div className="grow w-full flex flex-col justify-between p-2.5 pb-5">
-              <div>
-                <p className="">
-                  Saved to: <strong>{overlayContentList.name}</strong>
-                </p>
-                <div className="mt-2.5">
-                  <Textarea
-                    placeholder="Link body"
-                    rows={4}
-                    disabled
-                    value={overlayContentList.pushedLinkURL}
-                    className="resize-none"
-                  />
-                </div>
-                <div className="mt-1.5">
-                  <p className="group">
-                    <a
-                      href={`https://www.curation.space/${
+              <div></div>
+              {/* <Textarea
+                placeholder="Link body"
+                rows={4}
+                disabled
+                value={overlayContentList.pushedLinkURL}
+                className="resize-none mt-2"
+              /> */}
+              <p>Click anywhere to close</p>
+
+              <div className="flex flex-col gap-y-2">
+                <Button
+                  variant="outline"
+                  className="w-full text-xs flex justify-center items-center"
+                  onClick={() => {
+                    window.open(
+                      `https://www.curation.space/${
                         overlayContentList.contentType === 'feed'
                           ? 'feed_manager'
                           : `curation_station/?guid=${overlayContentList.guid}`
-                      }`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="border-b border-black group-hover:border-blue-500 group-hover:text-blue-500"
-                    >
-                      Edit in the{' '}
-                      <span className="text-blue-500">
-                        {overlayContentList.contentType === 'feed'
-                          ? 'Feed Manager'
-                          : 'Curation Station'}
-                      </span>
-                    </a>
+                      }`,
+                      '_blank'
+                    );
+                  }}
+                >
+                  <p>Edit in</p>
+                  <p className="flex items-center">
+                    {overlayContentList.contentType === 'feed' ? (
+                      <RadioTowerIcon className="h-4 w-4 mx-1.5" />
+                    ) : (
+                      <CopyPlusIcon className="h-4 w-4 mx-1.5" />
+                    )}
+                    {overlayContentList.contentType === 'feed'
+                      ? 'the Feed Manager'
+                      : 'the Curation Station'}
                   </p>
-                  <p className="my-0.5">or</p>
-                  <p className="group">
-                    <a
-                      href={`https://www.curation.space/${
+                </Button>
+
+                <Button
+                  variant="outline"
+                  className="w-full "
+                  onClick={() => {
+                    window.open(
+                      `https://www.curation.space/${
                         overlayContentList.ownerUid
                       }/${
                         overlayContentList.contentType === 'feed'
                           ? 'feed'
                           : overlayContentList.guid
-                      }`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="border-b border-black group-hover:border-blue-500 group-hover:text-blue-500"
-                    >
-                      View in{' '}
-                      <span className="capitalize">
+                      }`,
+                      '_blank'
+                    );
+                  }}
+                >
+                  <div className="w-4/5 mx-auto text-xs flex justify-center items-center">
+                    <p>View</p>
+                    <div className="flex items-center w-fit max-w-full">
+                      <p>
+                        {overlayContentList.contentType === 'feed' ? (
+                          <SignalIcon className="w-4 h-4 mx-1.5"></SignalIcon>
+                        ) : (
+                          <Square3Stack3DIcon className="w-4 h-4 mx-1.5"></Square3Stack3DIcon>
+                        )}
+                      </p>
+                      <p className="capitalize text-left truncate overflow-ellipsis">
                         {overlayContentList.name}
-                      </span>
-                    </a>
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-col gap-y-1.5">
+                      </p>
+                    </div>
+                  </div>
+                </Button>
+
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -154,11 +182,10 @@ const Popup = () => {
                   }}
                   type="submit"
                   variant="default"
-                  className="w-full"
+                  className="w-full text-sm"
                 >
                   Push another link
                 </Button>
-                <p className="mt-1">click anywhere to close</p>
               </div>
             </div>
           </div>
