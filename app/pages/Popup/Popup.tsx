@@ -49,14 +49,20 @@ const Popup = () => {
   const [overlayContentList, setOverlayContentList] =
     useState<ISelectedContentOverlay | null>(null);
 
-  const [user, setUser] = useState<User | null>(
+  const [rootUser, setRootUser] = useState<User | null>(
     localStorage.getItem('user')
       ? JSON.parse(localStorage.getItem('user') || '')
       : null
   );
 
+  const [accountAccessToken, setAccountAccessToken] = useState<string | null>(
+    localStorage.getItem('token')
+      ? JSON.parse(localStorage.getItem('token') || '')
+      : null
+  );
+
   const [userIsLoggedIn, setUserIsLoggedIn] = useState<boolean>(
-    user !== null ? true : false
+    rootUser !== null ? true : false
   );
 
   const [activeViewTab, setActiveViewTab] = useState<
@@ -64,15 +70,16 @@ const Popup = () => {
   >('login');
 
   useEffect(() => {
-    setUserIsLoggedIn(user !== null ? true : false);
-  }, [user]);
+    setUserIsLoggedIn(rootUser !== null ? true : false);
+  }, [rootUser]);
 
   useEffect(() => {
     setActiveViewTab(userIsLoggedIn ? 'push_to_content_list' : 'login');
   }, [userIsLoggedIn]);
 
   const handleLogout = () => {
-    setUser(null);
+    setRootUser(null);
+    setAccountAccessToken(null);
     localStorage.removeItem('user');
   };
 
@@ -198,24 +205,26 @@ const Popup = () => {
             <strong className="font-semibold">curation</strong>space
           </p>
         </header>
-        {userIsLoggedIn !== false && user !== null && (
+        {userIsLoggedIn !== false && rootUser !== null && (
           <div className="w-full justify-between flex border-b border-gray-200 p-2">
             <div className="flex items-center">
               <img
-                src={user.photoURL}
+                src={rootUser.photoURL}
                 alt="profile picture"
                 className="aspect-circle h-8 w-8 min-w-8 rounded-full object-cover"
               />
               <div className="ml-1.5">
-                <p className="font-semibold leading-none">{user.displayName}</p>
+                <p className="font-semibold leading-none">
+                  {rootUser.displayName}
+                </p>
                 <p className="text-xs">
                   <a
-                    href={`https://www.curation.space/${user.uid}`}
+                    href={`https://www.curation.space/${rootUser.uid}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-blue-500"
                   >
-                    @{user.uid}
+                    @{rootUser.uid}
                   </a>
                 </p>
               </div>
@@ -255,7 +264,7 @@ const Popup = () => {
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
                     <a
-                      href={`https://www.curation.space/${user.uid}`}
+                      href={`https://www.curation.space/${rootUser.uid}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-full flex items-center justify-start font-normal"
@@ -294,14 +303,21 @@ const Popup = () => {
           </div>
         )}
         <main className="grow mt-2 mx-auto w-5/6">
-          {/* <Login setUser={setUser} /> */}
-          {activeViewTab === 'login' && <Login setUser={setUser} />}
-          {activeViewTab === 'push_to_content_list' && user !== null && (
-            <PushToContentList
-              rootUser={user}
-              setOverlayContentList={setOverlayContentList}
+          {activeViewTab === 'login' && (
+            <Login
+              setRootUser={setRootUser}
+              setRootAccountAccessToken={setAccountAccessToken}
             />
           )}
+          {activeViewTab === 'push_to_content_list' &&
+            rootUser !== null &&
+            accountAccessToken !== null && (
+              <PushToContentList
+                rootUser={rootUser}
+                rootAccountAccessToken={accountAccessToken}
+                setOverlayContentList={setOverlayContentList}
+              />
+            )}
         </main>
         <footer className="text-center mt-6">
           <div className="bg-gray-100 p-2.5 flex justify-between">

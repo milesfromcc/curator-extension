@@ -90,30 +90,13 @@ const DropDownMenuItemContent = ({
   </DropdownMenuItem>
 );
 
-// const MyDropdownMenu = ({ children }) => {
-//   const dropdownContainerRef = useRef(null);
-
-//   useEffect(() => {
-//     const iframe = document.getElementById('my-iframe');
-//     const iframeDocument =
-//       iframe.contentDocument || iframe.contentWindow.document;
-//     dropdownContainerRef.current = iframeDocument.createElement('div');
-//     iframeDocument.body.appendChild(dropdownContainerRef.current);
-//     return () => {
-//       iframeDocument.body.removeChild(dropdownContainerRef.current);
-//     };
-//   }, []);
-
-//   return dropdownContainerRef.current
-//     ? createPortal(children, dropdownContainerRef.current)
-//     : null;
-// };
-
 function PushToContentList({
   rootUser,
+  rootAccountAccessToken,
   setOverlayContentList,
 }: {
   rootUser: User;
+  rootAccountAccessToken: string;
   setOverlayContentList: (overlayContentList: ISelectedContentOverlay) => void;
 }) {
   const [feed, setFeed] = useState<Feed | null>(null);
@@ -124,6 +107,7 @@ function PushToContentList({
   const [annotationBody, setAnnotationBody] = useState<string>('');
 
   const [isShowingFeedTagOptions, setIsShowingFeedTagOptions] = useState(false);
+
   const [
     isShowingContentAnnotationOptions,
     setIsShowingContentAnnotationOptions,
@@ -152,7 +136,7 @@ function PushToContentList({
       try {
         const response = await getFeedWithFeedTagsByUid({
           uid: rootUser.uid,
-          accountAccessToken: rootUser.accountAccessToken,
+          accountAccessToken: rootAccountAccessToken,
         });
 
         if (response.success) {
@@ -173,13 +157,12 @@ function PushToContentList({
       try {
         const response = await getCurationsByUid({
           uid: rootUser.uid,
-          accountAccessToken: rootUser.accountAccessToken,
+          accountAccessToken: rootAccountAccessToken,
         });
 
         if (response.success) {
           setCustomCurations(response.data.curationsByGroup.Custom);
           // setHistoryCuration(userCurationsResponse.history);
-          console.log(response.data.curationsByGroup);
           setFavoriteCuration(response.data.curationsByGroup.Favorites[0]);
           setQueudCuration(response.data.curationsByGroup.Queued[0]);
           setMarkedAsReadCuration(
@@ -248,10 +231,10 @@ function PushToContentList({
       try {
         const response = await pushToOwnerFeed({
           uid: rootUser.uid,
-          accountAccessToken: rootUser.accountAccessToken,
           url: currentTabUrl,
           feedTagFtids: appliedTagFtids,
           annotationBody: annotationBody,
+          accountAccessToken: rootAccountAccessToken,
         });
 
         if (response.success) {
@@ -275,7 +258,7 @@ function PushToContentList({
           guid: selectedContentList.guid,
           url: currentTabUrl,
           annotationBody,
-          accountAccessToken: rootUser.accountAccessToken,
+          accountAccessToken: rootAccountAccessToken,
         });
 
         if (response.success) {

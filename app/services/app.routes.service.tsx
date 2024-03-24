@@ -21,13 +21,17 @@ export async function authenticateUser({
   accountAccessToken,
 }: {
   accountAccessToken: string;
-}): Promise<IResponse<{ user: User }>> {
+}): Promise<IResponse<{ user: User; accountAccessToken: string }>> {
   try {
     const response = await fetch(
-      `http://localhost:3000/api/browser_extension/auth/${accountAccessToken}`,
+      `http://localhost:3000/api/browser_extension/auth`,
       {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accountAccessToken}`,
+          'Cache-Control': 'no-cache',
+        },
         body: JSON.stringify({}),
       }
     );

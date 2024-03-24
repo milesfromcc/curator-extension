@@ -7,10 +7,11 @@ import { User } from '../../../entities/user';
 import { DEFAULT_RESPONSE_ERROR_TEXT } from '../../../entities/response_status';
 
 type LoginProps = {
-  setUser: (user: User) => void;
+  setRootUser: (user: User) => void;
+  setRootAccountAccessToken: (accountAccessToken: string) => void;
 };
 
-function Login({ setUser }: LoginProps) {
+function Login({ setRootUser, setRootAccountAccessToken }: LoginProps) {
   const [accountAccessToken, setAccountAccessToken] = useState('');
   const [loginLoading, setLoginLoading] = useState(false);
   const [responseErrorText, setResponseErrorText] = useState('');
@@ -24,7 +25,13 @@ function Login({ setUser }: LoginProps) {
 
       if (response.success) {
         localStorage.setItem('user', JSON.stringify(response.data.user));
-        setUser(response.data.user);
+        localStorage.setItem(
+          'token',
+          JSON.stringify(response.data.accountAccessToken)
+        );
+
+        setRootUser(response.data.user);
+        setRootAccountAccessToken(response.data.accountAccessToken);
       } else {
         setResponseErrorText(response.error || DEFAULT_RESPONSE_ERROR_TEXT);
       }
