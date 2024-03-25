@@ -2,11 +2,19 @@ import { Curation, Feed } from '../entities/lists';
 import { ResponseStatus } from '../entities/response_status';
 import { FeedTag } from '../entities/tags';
 import { User } from '../entities/user';
+import config from '../config';
 
 interface IResponse<Data> {
   success: boolean;
   data: Data;
   error: string;
+}
+
+let SERVER_URL: string;
+if (config.environment === 'development') {
+  SERVER_URL = config.development_url;
+} else {
+  SERVER_URL = config.production_url;
 }
 
 async function returnFormattedResponse(response: Response) {
@@ -23,18 +31,15 @@ export async function authenticateUser({
   accountAccessToken: string;
 }): Promise<IResponse<{ user: User; accountAccessToken: string }>> {
   try {
-    const response = await fetch(
-      `http://localhost:3000/api/browser_extension/auth`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accountAccessToken}`,
-          'Cache-Control': 'no-cache',
-        },
-        body: JSON.stringify({}),
-      }
-    );
+    const response = await fetch(`${SERVER_URL}/api/browser_extension/auth`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accountAccessToken}`,
+        'Cache-Control': 'no-cache',
+      },
+      body: JSON.stringify({}),
+    });
 
     return returnFormattedResponse(response);
   } catch (error) {
@@ -51,7 +56,7 @@ export async function getFeedWithFeedTagsByUid({
 }): Promise<IResponse<{ feed: Feed; feedTags: FeedTag[] }>> {
   try {
     const response = await fetch(
-      `http://localhost:3000/api/browser_extension/get_feed_with_feed_tags_by_uid/${uid}`,
+      `${SERVER_URL}/api/browser_extension/get_feed_with_feed_tags_by_uid/${uid}`,
       {
         method: 'GET',
         headers: {
@@ -87,7 +92,7 @@ export async function getCurationsByUid({
 > {
   try {
     const response = await fetch(
-      `http://localhost:3000/api/browser_extension/get_curations_by_uid/${uid}`,
+      `${SERVER_URL}/api/browser_extension/get_curations_by_uid/${uid}`,
       {
         method: 'GET',
         headers: {
@@ -119,7 +124,7 @@ export async function pushToOwnerFeed({
 }): Promise<IResponse<undefined>> {
   try {
     const response = await fetch(
-      `http://localhost:3000/api/browser_extension/push_to_feed/${uid}`,
+      `${SERVER_URL}/api/browser_extension/push_to_feed/${uid}`,
       {
         method: 'POST',
         headers: {
@@ -154,7 +159,7 @@ export async function pushToOwnerCuration({
 }): Promise<IResponse<undefined>> {
   try {
     const response = await fetch(
-      `http://localhost:3000/api/browser_extension/push_to_owner_curation_by_guid/${guid}`,
+      `${SERVER_URL}/api/browser_extension/push_to_owner_curation_by_guid/${guid}`,
       {
         method: 'POST',
         headers: {
