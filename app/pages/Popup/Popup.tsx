@@ -30,22 +30,16 @@ import {
 } from '../Content/components/ui/tooltip';
 import { ISelectedContentOverlay } from '../../entities/lists';
 import { Textarea } from '../Content/components/ui/textarea';
+import config from '../../config';
+
+let SERVER_URL: string;
+if (config.environment === 'development') {
+  SERVER_URL = config.development_url;
+} else {
+  SERVER_URL = config.production_url;
+}
 
 const Popup = () => {
-  // useEffect(() => {
-  //   function handlePopupOpened(event: MessageEvent) {
-  //     if (event.data.type === 'POPUP_OPENED') {
-  //       // Handle the popup being opened here
-  //     }
-  //   }
-
-  //   window.addEventListener('message', handlePopupOpened);
-
-  //   return () => {
-  //     window.removeEventListener('message', handlePopupOpened);
-  //   };
-  // }, []);
-
   const [overlayContentList, setOverlayContentList] =
     useState<ISelectedContentOverlay | null>(null);
 
@@ -112,13 +106,6 @@ const Popup = () => {
             </div>
             <div className="grow w-full flex flex-col justify-between p-2.5 pb-5">
               <div></div>
-              {/* <Textarea
-                placeholder="Link body"
-                rows={4}
-                disabled
-                value={overlayContentList.pushedLinkURL}
-                className="resize-none mt-2"
-              /> */}
               <p>Click anywhere to close</p>
 
               <div className="flex flex-col gap-y-2">
@@ -127,7 +114,7 @@ const Popup = () => {
                   className="w-full text-xs flex justify-center items-center"
                   onClick={() => {
                     window.open(
-                      `https://www.curation.space/${
+                      `${SERVER_URL}/${
                         overlayContentList.contentType === 'feed'
                           ? 'feed_manager'
                           : `curation_station/?guid=${overlayContentList.guid}`
@@ -154,9 +141,7 @@ const Popup = () => {
                   className="w-full "
                   onClick={() => {
                     window.open(
-                      `https://www.curation.space/${
-                        overlayContentList.ownerUid
-                      }/${
+                      `${SERVER_URL}/${overlayContentList.ownerUid}/${
                         overlayContentList.contentType === 'feed'
                           ? 'feed'
                           : overlayContentList.guid
@@ -219,7 +204,7 @@ const Popup = () => {
                 </p>
                 <p className="text-xs">
                   <a
-                    href={`https://www.curation.space/${rootUser.uid}`}
+                    href={`${SERVER_URL}/${rootUser.uid}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="hover:text-blue-500"
@@ -239,7 +224,7 @@ const Popup = () => {
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
                     <a
-                      href={`https://www.curation.space/feed_manager`}
+                      href={`${SERVER_URL}/feed_manager`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-full flex items-center justify-start font-normal"
@@ -250,7 +235,7 @@ const Popup = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <a
-                      href={`https://www.curation.space/curation_station`}
+                      href={`${SERVER_URL}/curation_station`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-full flex items-center justify-start font-normal"
@@ -264,7 +249,7 @@ const Popup = () => {
                 <DropdownMenuGroup>
                   <DropdownMenuItem>
                     <a
-                      href={`https://www.curation.space/${rootUser.uid}`}
+                      href={`${SERVER_URL}/${rootUser.uid}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-full flex items-center justify-start font-normal"
@@ -275,7 +260,7 @@ const Popup = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <a
-                      href={`https://www.curation.space/settings`}
+                      href={`${SERVER_URL}/settings`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-full flex items-center justify-start font-normal"
@@ -325,9 +310,7 @@ const Popup = () => {
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() =>
-                  window.open('https://www.curation.space', '_blank')
-                }
+                onClick={() => window.open('${SERVER_URL}', '_blank')}
               >
                 Open the web app
               </Button>
@@ -338,7 +321,7 @@ const Popup = () => {
                   <TooltipTrigger asChild>
                     <a
                       className="p-2 hover:bg-gray-200 rounded-md cursor-pointer"
-                      href={`https://www.curation.space/faq`}
+                      href={`${SERVER_URL}/faq`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -354,7 +337,7 @@ const Popup = () => {
                   <TooltipTrigger asChild>
                     <a
                       className="p-2 hover:bg-gray-200 rounded-md cursor-pointer"
-                      href={`https://www.curation.space/about`}
+                      href={`${SERVER_URL}/about`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >

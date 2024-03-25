@@ -4,17 +4,17 @@ import { FeedTag } from '../entities/tags';
 import { User } from '../entities/user';
 import config from '../config';
 
-interface IResponse<Data> {
-  success: boolean;
-  data: Data;
-  error: string;
-}
-
 let SERVER_URL: string;
 if (config.environment === 'development') {
   SERVER_URL = config.development_url;
 } else {
   SERVER_URL = config.production_url;
+}
+
+interface IResponse<Data> {
+  success: boolean;
+  data: Data;
+  error: string;
 }
 
 async function returnFormattedResponse(response: Response) {

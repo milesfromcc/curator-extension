@@ -194,15 +194,6 @@ var options = {
         },
       ],
     }),
-    // new CopyWebpackPlugin({
-    //   patterns: [
-    //     {
-    //       from: 'app/assets/img/logo.png',
-    //       to: path.join(__dirname, 'build'),
-    //       force: true,
-    //     },
-    //   ],
-    // }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'app', 'pages', 'Options', 'index.html'),
       filename: 'options.html',
@@ -215,12 +206,6 @@ var options = {
       chunks: ['popup'],
       cache: false,
     }),
-    // new HtmlWebpackPlugin({
-    //   template: path.join(__dirname, 'app', 'pages', 'Devtools', 'index.html'),
-    //   filename: 'devtools.html',
-    //   chunks: ['devtools'],
-    //   cache: false,
-    // }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, 'app', 'pages', 'Panel', 'index.html'),
       filename: 'panel.html',
