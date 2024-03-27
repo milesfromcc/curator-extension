@@ -1,8 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import React, { useEffect, useState } from 'react';
+
+import {
+  ArrowLongDownIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  SignalIcon,
+  Square3Stack3DIcon,
+} from '@heroicons/react/24/outline';
+import { HeartIcon, InboxArrowDownIcon } from '@heroicons/react/24/solid';
+import { BookOpenCheckIcon } from 'lucide-react';
 
 import { Button } from '../components/ui/button';
-import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
 import { ScrollArea } from '../components/ui/scroll-area';
 import { Spinner, Typography } from '@material-tailwind/react';
@@ -14,24 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu';
-
-import {
-  ArrowLongDownIcon,
-  ArrowLongRightIcon,
-  CheckCircleIcon,
-  CheckIcon,
-  ChevronDoubleDownIcon,
-  ChevronDownIcon,
-  Cog6ToothIcon,
-  SignalIcon,
-  Square3Stack3DIcon,
-} from '@heroicons/react/24/outline';
-
-import {
-  HeartIcon,
-  InboxArrowDownIcon,
-  StarIcon,
-} from '@heroicons/react/24/solid';
+import { FeedTagBadge } from '../components/feedTagBadge';
 
 import {
   getCurationsByUid,
@@ -39,17 +30,14 @@ import {
   pushToOwnerCuration,
   pushToOwnerFeed,
 } from '../../../services/app.routes.service';
-import { FeedTagBadge } from '../components/feedTagBadge';
 import { FeedTag } from '../../../entities/tags';
 import {
-  ContentList,
   Curation,
   Feed,
   ISelectedContent,
   ISelectedContentOverlay,
 } from '../../../entities/lists';
 import { isFetchableURL } from '../../../utils/inputValidation';
-import { BookOpenCheckIcon } from 'lucide-react';
 import { User } from '../../../entities/user';
 import { DEFAULT_RESPONSE_ERROR_TEXT } from '../../../entities/response_status';
 
@@ -108,16 +96,10 @@ function PushToContentList({
 
   const [isShowingFeedTagOptions, setIsShowingFeedTagOptions] = useState(false);
 
-  const [
-    isShowingContentAnnotationOptions,
-    setIsShowingContentAnnotationOptions,
-  ] = useState(false);
-
   const [selectedContentList, setSelectedContentList] =
     useState<ISelectedContent | null>(null);
 
   const [customCurations, setCustomCurations] = useState<Curation[]>([]);
-  // const [historyCuration, setHistoryCuration] = useState<Curation>();
   const [favoriteCuration, setFavoriteCuration] = useState<Curation>();
   const [queudCuration, setQueudCuration] = useState<Curation>();
   const [markedAsReadCuration, setMarkedAsReadCuration] = useState<Curation>();
@@ -162,7 +144,6 @@ function PushToContentList({
 
         if (response.success) {
           setCustomCurations(response.data.curationsByGroup.Custom);
-          // setHistoryCuration(userCurationsResponse.history);
           setFavoriteCuration(response.data.curationsByGroup.Favorites[0]);
           setQueudCuration(response.data.curationsByGroup.Queued[0]);
           setMarkedAsReadCuration(
@@ -291,7 +272,6 @@ function PushToContentList({
         setCurrentTabUrl(tabs[0].url);
       }
     });
-    // setCurrentTabUrl(window.location.href);
   }, []);
 
   return (
@@ -313,7 +293,7 @@ function PushToContentList({
               }}
             >
               <Textarea
-                placeholder="Link body"
+                placeholder="Link"
                 rows={4}
                 value={currentTabUrl}
                 className="resize-none"
@@ -382,7 +362,6 @@ function PushToContentList({
                       {favoriteCuration && (
                         <DropDownMenuItemContent
                           name={favoriteCuration.name}
-                          // photoURL={favoriteCuration.photoURL}
                           onClick={() =>
                             setSelectedContentList({
                               ...favoriteCuration,
@@ -396,7 +375,6 @@ function PushToContentList({
                       {queudCuration && (
                         <DropDownMenuItemContent
                           name={queudCuration.name}
-                          // photoURL={historyCuration.photoURL}
                           onClick={() =>
                             setSelectedContentList({
                               ...queudCuration,
@@ -410,7 +388,6 @@ function PushToContentList({
                       {markedAsReadCuration && (
                         <DropDownMenuItemContent
                           name={markedAsReadCuration.name}
-                          // photoURL={historyCuration.photoURL}
                           onClick={() =>
                             setSelectedContentList({
                               ...markedAsReadCuration,
@@ -437,15 +414,13 @@ function PushToContentList({
                               contentType: 'curation',
                             })
                           }
-                        >
-                          {/* <Square3Stack3DIcon className="w-4 h-4" /> */}
-                        </DropDownMenuItemContent>
+                        ></DropDownMenuItemContent>
                       ))}
                     </DropdownMenuGroup>
                   </ScrollArea>
                 </DropdownMenuContent>
               </DropdownMenu>
-
+              {/* 
               <Button
                 type="submit"
                 variant="default"
@@ -460,7 +435,7 @@ function PushToContentList({
                 {pushLinkLoading && (
                   <Spinner color="gray" className="w-4 h-4 ml-2"></Spinner>
                 )}
-              </Button>
+              </Button> */}
               <div className="flex justify-center mt-6">
                 <p className="absolute transform translate-y-0.5 -translate-x-8 text-[0.65rem]">
                   (optional)

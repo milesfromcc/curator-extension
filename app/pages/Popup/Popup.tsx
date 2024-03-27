@@ -93,16 +93,12 @@ const Popup = () => {
             <div className="bg-gray-100 p-2.5 w-full justify-center items-center rounded-t flex flex-col">
               <CheckCircleIcon className="h-8 w-8 text-green-600" />
               <p className="mt-2.5">
-                Saved to{' '}
-                <span className="capitalize">
-                  {overlayContentList.contentType}
-                </span>
-                : <strong>{overlayContentList.name}</strong>
+                Saved to: <strong>{overlayContentList.name}</strong>
               </p>
             </div>
             <div className="grow w-full flex flex-col justify-between p-2.5 pb-5">
               <div></div>
-              <p>Click anywhere to close</p>
+              <p>click anywhere to close</p>
 
               <div className="flex flex-col gap-y-2">
                 <Button
@@ -119,7 +115,7 @@ const Popup = () => {
                     );
                   }}
                 >
-                  <p>Edit in</p>
+                  <p>Edit in the</p>
                   <p className="flex items-center">
                     {overlayContentList.contentType === 'feed' ? (
                       <RadioTowerIcon className="h-4 w-4 mx-1.5" />
@@ -127,8 +123,8 @@ const Popup = () => {
                       <CopyPlusIcon className="h-4 w-4 mx-1.5" />
                     )}
                     {overlayContentList.contentType === 'feed'
-                      ? 'the Feed Manager'
-                      : 'the Curation Station'}
+                      ? 'Feed Manager'
+                      : 'Curation Station'}
                   </p>
                 </Button>
 
@@ -262,7 +258,7 @@ const Popup = () => {
                       className="w-full flex items-center justify-start font-normal"
                     >
                       <Cog6ToothIcon className="h-4 w-4 mr-1.5 text-black" />
-                      Account
+                      Settings
                     </a>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
@@ -275,7 +271,7 @@ const Popup = () => {
                       variant="ghost"
                       onClick={handleLogout}
                     >
-                      Logout
+                      Log out
                     </Button>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
@@ -317,14 +313,16 @@ const Popup = () => {
                   <TooltipTrigger asChild>
                     <a
                       className="p-2 hover:bg-gray-200 rounded-md cursor-pointer"
-                      href={`${SERVER_URL}/faq`}
+                      href={`${SERVER_URL}/prelaunch-overview`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       <QuestionMarkIcon className="w-4 h-4" />
                     </a>
                   </TooltipTrigger>
-                  <TooltipContent side="top">FAQ</TooltipContent>
+                  <TooltipContent side="top">
+                    Pre-launch overview
+                  </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
 
