@@ -1,18 +1,26 @@
-NPM INSTRUCTIONS:
+## Installation
 
-1. npm run build
+### Set it up and get it running locally
 
-2. npm run start
+1. `npm install`
 
-ADDING THE EXTENSION TO YOUR BROWSER:
+2. `npm run build`
 
-1. open a new tab and go to chrome://extensions/
+3. `npm run start`
 
-2. click 'Load unpacked' and select the build directory from within your repo
+### Add the extension to your browser:
 
-3. if you make changes and they aren't automatically applied you can click the reload icon
+1. Open a new tab and go to `chrome://extensions/`.
 
-NEED TO KNOW:
+2. At the top of the screen, enable developer mode.
+
+3. Click `Load unpacked` and select the `/build` directory (which is only created after you've executed `npm run start`) from the local repo.
+
+## Things to know
+
+- If you make changes and they aren't automatically applied, you can click the reload icon (?)
+
+---
 
 - there are always going to be errors while in development mode so don't worry too much if those don't go away
 
