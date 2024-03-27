@@ -41,12 +41,8 @@ var options = {
   },
   mode: process.env.NODE_ENV || 'development',
   entry: {
-    options: path.join(__dirname, 'app', 'pages', 'Options', 'index.jsx'),
     popup: path.join(__dirname, 'app', 'pages', 'Popup', 'index.tsx'),
     background: path.join(__dirname, 'app', 'pages', 'Background', 'index.js'),
-    contentScript: path.join(__dirname, 'app', 'pages', 'Content', 'index.js'),
-    devtools: path.join(__dirname, 'app', 'pages', 'Devtools', 'index.js'),
-    panel: path.join(__dirname, 'app', 'pages', 'Panel', 'index.jsx'),
   },
   chromeExtensionBoilerplate: {
     notHotReload: ['background'],
@@ -78,22 +74,12 @@ var options = {
               },
             },
           },
-          // {
-          //   loader: 'sass-loader',
-          //   options: {
-          //     sourceMap: true,
-          //   },
-          // },
         ],
       },
       {
         test: new RegExp('.(' + fileExtensions.join('|') + ')$'),
         type: 'asset/resource',
         exclude: /node_modules/,
-        // loader: 'file-loader',
-        // options: {
-        //   name: '[name].[ext]',
-        // },
       },
       {
         test: /\.html$/,
@@ -170,24 +156,6 @@ var options = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: 'app/pages/Content/content.styles.css',
-          to: path.join(__dirname, 'build'),
-          force: true,
-        },
-      ],
-    }),
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: 'app/processed-tailwind.css',
-          to: path.join(__dirname, 'build'),
-          force: true,
-        },
-      ],
-    }),
-    new CopyWebpackPlugin({
-      patterns: [
-        {
           from: 'app/assets/img/logo.png',
           to: path.join(__dirname, 'build'),
           force: true,
@@ -204,12 +172,6 @@ var options = {
       template: path.join(__dirname, 'app', 'pages', 'Popup', 'index.html'),
       filename: 'popup.html',
       chunks: ['popup'],
-      cache: false,
-    }),
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, 'app', 'pages', 'Panel', 'index.html'),
-      filename: 'panel.html',
-      chunks: ['panel'],
       cache: false,
     }),
   ].filter(Boolean),
