@@ -45,11 +45,11 @@ var options = {
     popup: path.join(__dirname, 'app', 'pages', 'Popup', 'index.tsx'),
     background: path.join(__dirname, 'app', 'pages', 'Background', 'index.js'),
     contentScript: path.join(__dirname, 'app', 'pages', 'Content', 'index.js'),
-    // devtools: path.join(__dirname, 'app', 'pages', 'Devtools', 'index.js'),
+    devtools: path.join(__dirname, 'app', 'pages', 'Devtools', 'index.js'),
     panel: path.join(__dirname, 'app', 'pages', 'Panel', 'index.jsx'),
   },
   chromeExtensionBoilerplate: {
-    notHotReload: ['background', 'contentScript'],
+    notHotReload: ['background'],
   },
   output: {
     filename: '[name].bundle.js',

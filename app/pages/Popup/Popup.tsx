@@ -1,5 +1,4 @@
 import React, { SetStateAction, useEffect, useState } from 'react';
-import { Spinner, Typography } from '@material-tailwind/react';
 import Login from '../Content/views/login';
 import PushToContentList from '../Content/views/push_to_content_list';
 
@@ -29,15 +28,12 @@ import {
   TooltipTrigger,
 } from '../Content/components/ui/tooltip';
 import { ISelectedContentOverlay } from '../../entities/lists';
-import { Textarea } from '../Content/components/ui/textarea';
 import config from '../../config';
 
-let SERVER_URL: string;
-if (config.environment === 'development') {
-  SERVER_URL = config.development_url;
-} else {
-  SERVER_URL = config.production_url;
-}
+let SERVER_URL: string =
+  config.environment === 'development'
+    ? config.development_url
+    : config.production_url;
 
 const Popup = () => {
   const [overlayContentList, setOverlayContentList] =

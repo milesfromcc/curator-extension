@@ -4,12 +4,10 @@ import { FeedTag } from '../entities/tags';
 import { User } from '../entities/user';
 import config from '../config';
 
-let SERVER_URL: string;
-if (config.environment === 'development') {
-  SERVER_URL = config.development_url;
-} else {
-  SERVER_URL = config.production_url;
-}
+let SERVER_URL: string =
+  config.environment === 'development'
+    ? config.development_url
+    : config.production_url;
 
 interface IResponse<Data> {
   success: boolean;
