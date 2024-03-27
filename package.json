@@ -1,11 +1,11 @@
 {
-  "name": "curation space",
-  "version": "5.0.4",
-  "description": "curation space is a Chrome extension that allows you to save, organize, and share your favorite content from the web.",
+  "name": "curation-space-copilot",
+  "version": "1.0.0",
+  "description": "Copilot makes it easier for you to curate links on the go.",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/milesfromcc/curator-extension"
   },
   "scripts": {
     "build": "npm run build:css && npm run build:app",
