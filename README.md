@@ -18,7 +18,7 @@
 
 ## Things to know
 
-- If you make changes and they aren't automatically applied, you can click the reload icon (?)
+- if you make changes and they aren't automatically applied, you can click the reload icon (?)
 
 ---
 
